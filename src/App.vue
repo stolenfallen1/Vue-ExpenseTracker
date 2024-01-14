@@ -4,7 +4,10 @@
     <div class="container">
       <Balance :total="total" />
       <IncomeExpense :income="income" :expenses="expenses" />
-      <TransactionList :transactions="transactions" />
+      <TransactionList
+        :transactions="transactions"
+        @deleteTransaction="handleTransactionDeleted"
+      />
       <AddTransaction @addTransaction="handleTransactionSubmitted" />
     </div>
   </div>
@@ -19,16 +22,19 @@ import IncomeExpense from "./components/IncomeExpense.vue";
 import Balance from "./components/Balance.vue";
 import Header from "./components/Header.vue";
 
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
-const transactions = ref([
-  { id: 1, text: "Flower", amount: -19.99 },
-  { id: 2, text: "Salary", amount: 299.97 },
-  { id: 3, text: "Book", amount: -10 },
-  { id: 4, text: "Camera", amount: 150 },
-]);
+// Get transaction data from local storage on page load / mount
+onMounted(() => {
+  const savedTransactions = JSON.parse(localStorage.getItem("transactions"));
+  if (savedTransactions) {
+    transactions.value = savedTransactions;
+  }
+});
 
 const toast = useToast();
+
+const transactions = ref([]);
 
 // Get total amount of transactions
 const total = computed(() => {
@@ -62,7 +68,22 @@ const handleTransactionSubmitted = (transactionData) => {
     text: transactionData.text,
     amount: transactionData.amount,
   });
+  savedTransactionsToLocalStorage();
   toast.success("Transaction added successfully");
+};
+
+// Delete transaction
+const handleTransactionDeleted = (id) => {
+  transactions.value = transactions.value.filter(
+    (transaction) => transaction.id !== id
+  );
+  savedTransactionsToLocalStorage();
+  toast.success("Transaction deleted");
+};
+
+// Save transaction data to local storage
+const savedTransactionsToLocalStorage = () => {
+  localStorage.setItem("transactions", JSON.stringify(transactions.value));
 };
 </script>
 
