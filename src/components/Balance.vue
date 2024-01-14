@@ -1,14 +1,17 @@
 <template>
   <h4>Your Balance</h4>
-  <h1 id="balance">₱0.00</h1>
+  <h1 id="balance">₱{{ total }}</h1>
 </template>
 
-<script>
-export default {
-  setup() {
-    return {};
+<script setup>
+import { defineProps } from "vue";
+
+const props = defineProps({
+  total: {
+    type: Number,
+    required: true,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

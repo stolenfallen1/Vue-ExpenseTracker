@@ -2,21 +2,28 @@
   <div class="inc-exp-container">
     <div>
       <h4>Income</h4>
-      <p>+₱0.00</p>
+      <p id="money-plus" class="money plus">+₱ {{ income }}</p>
     </div>
     <div>
       <h4>Expense</h4>
-      <p>-₱0.00</p>
+      <p id="money-minus" class="money minus">-₱ {{ expenses }}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  setup() {
-    return {};
+<script setup>
+import { defineProps } from "vue";
+
+const props = defineProps({
+  income: {
+    type: Number,
+    required: true,
   },
-};
+  expenses: {
+    type: Number,
+    required: true,
+  },
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -2,8 +2,8 @@
   <div>
     <Header />
     <div class="container">
-      <Balance />
-      <IncomeExpense />
+      <Balance :total="total" />
+      <IncomeExpense :income="income" :expenses="expenses" />
       <TransactionList :transactions="transactions" />
       <AddTransaction />
     </div>
@@ -17,7 +17,7 @@ import IncomeExpense from "./components/IncomeExpense.vue";
 import Balance from "./components/Balance.vue";
 import Header from "./components/Header.vue";
 
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const transactions = ref([
   { id: 1, text: "Flower", amount: -19.99 },
@@ -25,6 +25,31 @@ const transactions = ref([
   { id: 3, text: "Book", amount: -10 },
   { id: 4, text: "Camera", amount: 150 },
 ]);
+
+// Get total amount of transactions
+const total = computed(() => {
+  return transactions.value.reduce((acc, transaction) => {
+    return acc + transaction.amount;
+  }, 0);
+});
+
+// Get income
+const income = computed(() => {
+  return transactions.value
+    .filter((transaction) => transaction.amount > 0)
+    .reduce((acc, transaction) => {
+      return acc + transaction.amount;
+    }, 0);
+});
+
+// Get expense
+const expenses = computed(() => {
+  return transactions.value
+    .filter((transaction) => transaction.amount < 0)
+    .reduce((acc, transaction) => {
+      return acc + transaction.amount;
+    }, 0);
+});
 </script>
 
 <style lang="scss" scoped></style>
